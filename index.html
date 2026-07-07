@@ -3,49 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>推しテチョ - サポート</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<title>推しテチョ - 推し活手帳 | お金も、思い出も、予定も、この1冊に。</title>
+<meta name="description" content="推し活のお金・思い出・予定をひとつにまとめる手帳アプリ。参戦記録はチケット風カードにしてシェア。夜、推しに灯りをともす祭壇のようなiPhoneアプリです。">
+<meta property="og:title" content="推しテチョ - 推し活手帳">
+<meta property="og:description" content="推し活を、この1冊に。お金・思い出・予定をまとめて記録、チケット風カードでシェアできる推し活手帳アプリ。">
+<meta property="og:image" content="https://miko-me.github.io/oshitecho-support/assets/ogp.png">
+<meta property="og:url" content="https://miko-me.github.io/oshitecho-support/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
 <style>
-  body { font-family: 'Zen Maru Gothic', sans-serif; background: #1E1018;
-         color: #EFE4EA; margin: 0; line-height: 1.9; }
-  main { max-width: 680px; margin: 0 auto; padding: 48px 20px 80px; }
-  h1 { font-size: 26px; color: #F5C2D4; }
-  h2 { font-size: 18px; color: #ED93B1; margin-top: 40px;
-       border-bottom: 1px solid #4A2A3A; padding-bottom: 8px; }
-  p, li { font-size: 15px; }
-  a { color: #ED93B1; }
-  .tagline { color: #C9A8B8; }
+  :root {
+    --ink: #FFF4F8;
+    --sub: #C9A8B8;
+    --pink: #ED93B1;
+    --deep-pink: #D4537E;
+    --gold: #F0C537;
+    --card-line: rgba(237, 147, 177, 0.35);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Zen Maru Gothic', 'Hiragino Kaku Gothic ProN', sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, #140C1E 0%, #2E1622 45%, #4A2537 80%, #5C3040 100%);
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- 星空 ---------- */
+  .sky { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .star {
+    position: absolute; border-radius: 50%; background: #F5E3EC;
+    animation: twinkle 3.6s ease-in-out infinite;
+  }
+  @keyframes twinkle { 0%, 100% { opacity: .18; } 50% { opacity: .65; } }
+  @media (prefers-reduced-motion: reduce) {
+    .star, .halo::before { animation: none !important; }
+  }
+  .moon {
+    position: absolute; top: 64px; right: 8%;
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #F7E9C8;
+    box-shadow: 0 0 48px 16px rgba(247, 233, 200, .28);
+  }
+  main { position: relative; z-index: 1; }
+
+  /* ---------- ヒーロー ---------- */
+  .hero { padding: 96px 0 72px; display: flex; align-items: center; gap: 48px; flex-wrap: wrap; }
+  .hero-text { flex: 1 1 380px; }
+  .hero h1 {
+    font-size: clamp(38px, 6vw, 58px); font-weight: 900;
+    line-height: 1.4; letter-spacing: .04em;
+  }
+  .hero .tagline { margin-top: 18px; font-size: 17px; color: var(--pink); font-weight: 700; letter-spacing: .1em; }
+  .hero .lead { margin-top: 14px; font-size: 15px; color: var(--sub); }
+  .badges { margin-top: 32px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .badges img { height: 56px; display: block; }
+  .free-note { font-size: 13px; color: var(--sub); }
+
+  .hero-visual { flex: 1 1 300px; display: flex; justify-content: center; }
+  .halo { position: relative; width: min(280px, 68vw); }
+  .halo::before { /* 後光リング */
+    content: ""; position: absolute; inset: -13%;
+    border-radius: 50% / 42%;
+    background: radial-gradient(ellipse at center,
+      rgba(237, 147, 177, .34) 0%, rgba(237, 147, 177, .10) 48%, transparent 70%);
+    animation: breathe 4.5s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.06); opacity: 1; } }
+  .halo .screen {
+    position: relative; overflow: hidden;
+    border-radius: 34px; border: 8px solid #0D0812;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  }
+  /* height:auto必須（Safariはheight属性を優先して縦に引き伸ばすため） */
+  .halo img, .t-shot img { width: 100%; height: auto; display: block; }
+
+  /* ---------- セクション見出し ---------- */
+  section { padding: 56px 0; }
+  .sec-head { text-align: center; margin-bottom: 44px; }
+  .sec-head .en { font-size: 12px; letter-spacing: .35em; color: var(--gold); font-weight: 700; }
+  .sec-head h2 { font-size: clamp(24px, 4vw, 32px); font-weight: 900; margin-top: 6px; letter-spacing: .06em; }
+
+  /* ---------- チケット型カード ---------- */
+  .tickets { display: flex; flex-direction: column; gap: 40px; }
+  .ticket {
+    display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
+    background: rgba(255, 244, 248, .055);
+    border: 1.5px solid var(--card-line);
+    border-radius: 20px;
+    padding: 32px 36px;
+    position: relative;
+    /* 半券のノッチ */
+    -webkit-mask:
+      radial-gradient(circle 14px at 0 50%, transparent 98%, #000) left,
+      radial-gradient(circle 14px at 100% 50%, transparent 98%, #000) right;
+    -webkit-mask-size: 51% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask:
+      radial-gradient(circle 14px at 0 50%, transparent 98%, #000) left,
+      radial-gradient(circle 14px at 100% 50%, transparent 98%, #000) right;
+    mask-size: 51% 100%;
+    mask-repeat: no-repeat;
+  }
+  .ticket:nth-child(even) { flex-direction: row-reverse; }
+  .t-shot {
+    flex: 0 0 210px; max-width: 210px; margin: 0 auto;
+    height: 295px; overflow: hidden; border-radius: 22px;
+    border: 5px solid #0D0812; box-shadow: 0 14px 36px rgba(0, 0, 0, .45);
+  }
+  .t-shot img {
+    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 98%);
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 98%);
+  }
+  .t-body { max-width: 520px; }
+  .t-body { flex: 1 1 320px; }
+  .t-no {
+    font-size: 11px; letter-spacing: .3em; color: var(--gold);
+    font-weight: 700; border-bottom: 1.5px dashed var(--card-line);
+    padding-bottom: 10px; margin-bottom: 14px;
+  }
+  .t-body h3 { font-size: 22px; font-weight: 900; letter-spacing: .04em; }
+  .t-body p { margin-top: 10px; font-size: 15px; color: var(--sub); }
+  .t-body .em { color: var(--pink); font-weight: 700; }
+
+  /* ---------- 安心設計 ---------- */
+  .trust { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+  .trust-item {
+    flex: 1 1 240px; max-width: 300px; text-align: center;
+    background: rgba(255, 244, 248, .045);
+    border: 1.5px solid rgba(237, 147, 177, .2);
+    border-radius: 16px; padding: 26px 22px;
+  }
+  .trust-item .icon { font-size: 30px; }
+  .trust-item h3 { font-size: 16px; font-weight: 700; margin-top: 10px; }
+  .trust-item p { font-size: 13px; color: var(--sub); margin-top: 6px; }
+
+  /* ---------- 灯りの区切り ---------- */
+  .lights { display: flex; justify-content: center; gap: 14px; padding: 8px 0; }
+  .light { width: 9px; height: 9px; border-radius: 50%; background: rgba(240, 197, 55, .25); }
+  .light.on { background: var(--gold); box-shadow: 0 0 12px 3px rgba(240, 197, 55, .45); }
+
+  /* ---------- CTA・フッター ---------- */
+  .cta { text-align: center; padding: 72px 0 40px; }
+  .cta h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 900; letter-spacing: .06em; }
+  .cta p { margin-top: 12px; color: var(--sub); font-size: 15px; }
+  .cta .badges { justify-content: center; margin-top: 28px; }
+  footer {
+    border-top: 1px solid rgba(237, 147, 177, .18);
+    margin-top: 48px; padding: 32px 0 48px;
+    text-align: center; font-size: 13px; color: var(--sub);
+  }
+  footer nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+  footer a { color: var(--pink); text-decoration: none; }
+  footer a:hover, footer a:focus-visible { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+  @media (max-width: 640px) {
+    .hero { padding-top: 72px; text-align: center; }
+    .badges { justify-content: center; }
+    .ticket { padding: 28px 22px; }
+    .ticket, .ticket:nth-child(even) { flex-direction: column; }
+    /* 縦積みではflexの基準が高さ方向に変わるため、寸法を固定し直す */
+    .t-shot { flex: none; width: 210px; height: 295px; }
+  }
 </style>
 </head>
 <body>
-<main>
-<h1>推しテチョ</h1>
-<p class="tagline">推し活の記録・予定・お金を、ひとつの手帳に。<br>
-夜、推しに灯りをともす祭壇のようなアプリです。</p>
 
-<h2>できること</h2>
-<ul>
-  <li>推しごとの祭壇ホーム（推して◯日・愛レベル・今週の灯り）</li>
-  <li>お金と思い出をまとめて記録、チケット風カードでシェア</li>
-  <li>現場・発売日のカウントダウンと前日リマインド通知</li>
-  <li>推し貯金の目標管理</li>
-  <li>iCloudで自動バックアップ・機種変しても安心</li>
-</ul>
+<div class="sky" aria-hidden="true">
+  <div class="moon"></div>
+  <div class="star" style="top:10%; left:12%; width:4px; height:4px;"></div>
+  <div class="star" style="top:22%; left:78%; width:5px; height:5px; animation-delay:.8s"></div>
+  <div class="star" style="top:6%;  left:52%; width:3px; height:3px; animation-delay:1.6s"></div>
+  <div class="star" style="top:34%; left:28%; width:4px; height:4px; animation-delay:2.2s"></div>
+  <div class="star" style="top:48%; left:88%; width:4px; height:4px; animation-delay:.4s"></div>
+  <div class="star" style="top:64%; left:8%;  width:5px; height:5px; animation-delay:1.2s"></div>
+  <div class="star" style="top:80%; left:70%; width:3px; height:3px; animation-delay:2.8s"></div>
+</div>
 
-<h2>よくある質問</h2>
-<p><strong>Q. データが消えるのが心配です</strong><br>
-A. データは端末とあなたのiCloudに保存されます。iPhoneの設定でiCloudにサインインしていれば、機種変更後もアプリを入れ直すだけで復元されます。</p>
-<p><strong>Q. 広告を消したい</strong><br>
-A. アプリ内の設定からプレミアムにアップグレードすると、広告が非表示になり、シェアカードの透かしも消え、推しを何人でも登録できるようになります。</p>
-<p><strong>Q. サブスクリプションを解約したい</strong><br>
-A. iOSの「設定」→ Apple ID →「サブスクリプション」からいつでも解約できます。</p>
+<main class="wrap">
 
-<h2>お問い合わせ</h2>
-<p>不具合のご報告・ご要望は、メールでお気軽にどうぞ。<br>
-メール: kodai18gm@gmail.com</p>
+  <!-- ヒーロー -->
+  <header class="hero">
+    <div class="hero-text">
+      <h1>推し活を、<br>この1冊に。</h1>
+      <p class="tagline">お金も、思い出も、予定も。</p>
+      <p class="lead">「推しテチョ」は、夜の祭壇に推しを飾って、記録するたび灯りがともる推し活手帳アプリです。</p>
+      <div class="badges">
+        <!-- TODO: リリース後にApp StoreのURLへ差し替え -->
+        <a href="#" id="store-link" aria-label="App Storeでダウンロード">
+          <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/ja-jp" alt="App Storeでダウンロード">
+        </a>
+        <span class="free-note">無料ではじめられます</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="halo">
+        <div class="screen">
+          <img src="assets/altar.png" alt="推しテチョの祭壇ホーム画面。推しの写真に後光リング、推して483日の表示" width="598" height="1200">
+        </div>
+      </div>
+    </div>
+  </header>
 
-<h2>プライバシーポリシー</h2>
-<p><a href="privacy.html">プライバシーポリシーはこちら</a></p>
+  <div class="lights" aria-hidden="true">
+    <div class="light on"></div><div class="light on"></div><div class="light on"></div>
+    <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+  </div>
+
+  <!-- 機能 -->
+  <section id="features">
+    <div class="sec-head">
+      <div class="en">FEATURES</div>
+      <h2>この1冊でできること</h2>
+    </div>
+    <div class="tickets">
+
+      <article class="ticket">
+        <div class="t-shot">
+          <img src="assets/sharecard.png" alt="参戦記録をチケット風カードにする画面。月刊誌テーマのカードを編集中" loading="lazy" width="598" height="838">
+        </div>
+        <div class="t-body">
+          <div class="t-no">TICKET NO.001</div>
+          <h3>🎫 参戦記録が、チケット風カードに</h3>
+          <p>写真と感想を入れるだけで、現場の思い出が<span class="em">シェアできるカード</span>に。チェキデコ・月刊誌・美術館など9つのデザインテーマから、その日の気分で選べます。</p>
+        </div>
+      </article>
+
+      <article class="ticket">
+        <div class="t-shot">
+          <img src="assets/memories.png" alt="これまでの記録画面。チケット半券風のカードが年表のように並ぶ" loading="lazy" width="598" height="1200">
+        </div>
+        <div class="t-body">
+          <div class="t-no">TICKET NO.002</div>
+          <h3>✏️ お金も思い出も、3タップで記録</h3>
+          <p>チケット、グッズ、チェキ。推し活の出費を<span class="em">物販の列に並びながら</span>記録できる速さにこだわりました。記録は「支出」ではなく「愛」として、あなただけの年表に積み上がります。</p>
+        </div>
+      </article>
+
+      <article class="ticket">
+        <div class="t-shot">
+          <img src="assets/future.png" alt="これからの画面。現場までのカウントダウンと推し貯金の目標ゲージ" loading="lazy" width="598" height="1200">
+        </div>
+        <div class="t-body">
+          <div class="t-no">TICKET NO.003</div>
+          <h3>🔥 カウントダウンと、推し貯金</h3>
+          <p>現場・発売日・締切まであと何日かをホームで表示。7日前からは炎がともります。<span class="em">「ツアーまでに3万円」</span>のような目標を立てて、遠征にそなえる貯金もこの1冊で。</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 安心設計 -->
+  <section id="trust">
+    <div class="sec-head">
+      <div class="en">SAFETY</div>
+      <h2>安心して、推せる設計</h2>
+    </div>
+    <div class="trust">
+      <div class="trust-item">
+        <div class="icon">☁️</div>
+        <h3>iCloudで自動バックアップ</h3>
+        <p>機種変更しても、アプリを入れ直すだけで思い出ごと復元されます。</p>
+      </div>
+      <div class="trust-item">
+        <div class="icon">🔒</div>
+        <h3>データは あなたのもの</h3>
+        <p>記録は端末とあなたのiCloudだけに保存。開発者のサーバーには一切送信されません。</p>
+      </div>
+      <div class="trust-item">
+        <div class="icon">🌙</div>
+        <h3>無料ではじめられる</h3>
+        <p>記録・シェアカード・カウントダウンは無料で使えます。推しをもっと増やしたくなったらプレミアムへ。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>今夜から、推しに灯りを。</h2>
+    <p>あなたの推し活を、ちゃんと残せる場所を作りました。</p>
+    <div class="badges">
+      <a href="#" aria-label="App Storeでダウンロード">
+        <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/ja-jp" alt="App Storeでダウンロード">
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <nav>
+      <a href="support.html">サポート・よくある質問</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="https://x.com/miko_me_kod">開発者X（@miko_me_kod）</a>
+    </nav>
+    <p>© 2026 Miko-me</p>
+  </footer>
+
 </main>
+
+<script>
+  // リリース後: ここのURLをApp Storeの実URLに書き換える（TODOと合わせて2ヶ所）
+  document.querySelectorAll('.badges a').forEach(a => {
+    if (a.getAttribute('href') === '#') a.addEventListener('click', e => e.preventDefault());
+  });
+</script>
 </body>
 </html>
